@@ -6,7 +6,9 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tasky",
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/images/icon.png"
@@ -47,6 +49,12 @@
       "eas": {
         "projectId": "a612c521-cec9-46b5-8659-4b7a305cc640"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a612c521-cec9-46b5-8659-4b7a305cc640"
     }
   }
 }
