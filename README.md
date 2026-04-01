@@ -4,22 +4,40 @@ A minimal, beautifully designed todo app built with **Expo** and **React Native*
 
 ---
 
+## 📸 Screenshots
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="assets/preview/tasky-launch-screen.jpeg" width="220" alt="Launch Screen" />
+        <br /><sub><b>Launch Screen</b></sub>
+      </td>
+      <td align="center">
+        <img src="assets/preview/tasky-today-screen.jpeg" width="220" alt="Today Tab" />
+        <br /><sub><b>Today Tab</b></sub>
+      </td>
+      <td align="center">
+        <img src="assets/preview/tasky-all-screen.jpeg" width="220" alt="All Tasks Tab" />
+        <br /><sub><b>All Tasks Tab</b></sub>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
 ## 📲 Try the App
 
-| Platform | Link |
-|---|---|
-| **Expo project page** | [expo.dev/projects/tasky](https://expo.dev/accounts/jatinkaushikjk/projects/tasky) |
-| **Preview build (APK)** | [Download latest build →](https://expo.dev/accounts/jatinkaushikjk/projects/tasky/builds) |
-| **EAS project ID** | `a612c521-cec9-46b5-8659-4b7a305cc640` |
+| **Preview build (APK)** | [Download latest build →](https://expo.dev/accounts/jatinkaushik-jk/projects/tasky/builds/5d5450a0-80df-4a8b-8211-6ce7da112060) |
 
-> **Android** — download the APK from the builds page and install it directly on your device (enable *Install from unknown sources* if prompted).  
-> **iOS** — use the development or TestFlight build via EAS.
+> **Android** — download the APK from the builds page and install it directly on your device (enable _Install from unknown sources_ if prompted).
 
 ---
 
 ## ✨ Features
 
-- **Two-tab layout** — *Today* tab shows tasks due today; *All Tasks* tab shows the complete list
+- **Two-tab layout** — _Today_ tab shows tasks due today; _All Tasks_ tab shows the complete list
 - **Add / Edit / Delete tasks** — full CRUD via a smooth slide-up bottom sheet modal
 - **Deadlines** — optional due date & time with overdue highlighting
 - **Reminders** — set a specific reminder time per task
@@ -32,18 +50,18 @@ A minimal, beautifully designed todo app built with **Expo** and **React Native*
 
 ## 🛠 Tech Stack
 
-| Layer | Library / Tool |
-|---|---|
-| Framework | [Expo](https://expo.dev) ~54 with [Expo Router](https://docs.expo.dev/router/introduction/) |
-| UI | React Native + custom violet-accented theme |
-| Date/Time Picker | [`@react-native-community/datetimepicker`](https://github.com/react-native-datetimepicker/datetimepicker) 8.4.4 |
-| Storage | [`@react-native-async-storage/async-storage`](https://github.com/react-native-async-storage/async-storage) |
-| State | React `useReducer` + Context |
-| Navigation | Expo Router (file-based) + `@react-navigation/bottom-tabs` |
-| Animations | React Native `Animated` API + `react-native-reanimated` |
-| Language | TypeScript |
-| Package Manager | [Bun](https://bun.sh) |
-| Build / Distribution | [EAS Build](https://docs.expo.dev/build/introduction/) |
+| Layer                | Library / Tool                                                                                                  |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Framework            | [Expo](https://expo.dev) ~54 with [Expo Router](https://docs.expo.dev/router/introduction/)                     |
+| UI                   | React Native + custom violet-accented theme                                                                     |
+| Date/Time Picker     | [`@react-native-community/datetimepicker`](https://github.com/react-native-datetimepicker/datetimepicker) 8.4.4 |
+| Storage              | [`@react-native-async-storage/async-storage`](https://github.com/react-native-async-storage/async-storage)      |
+| State                | React `useReducer` + Context                                                                                    |
+| Navigation           | Expo Router (file-based) + `@react-navigation/bottom-tabs`                                                      |
+| Animations           | React Native `Animated` API + `react-native-reanimated`                                                         |
+| Language             | TypeScript                                                                                                      |
+| Package Manager      | [Bun](https://bun.sh)                                                                                           |
+| Build / Distribution | [EAS Build](https://docs.expo.dev/build/introduction/)                                                          |
 
 ---
 
@@ -110,6 +128,7 @@ npx expo start
 ```
 
 Then press:
+
 - `a` — open on Android emulator / device
 - `i` — open on iOS simulator (macOS only)
 - `w` — open in the browser
@@ -128,11 +147,11 @@ bun run web       # Web browser
 
 This project uses [EAS Build](https://docs.expo.dev/build/introduction/). Three build profiles are configured in `eas.json`:
 
-| Profile | Description |
-|---|---|
-| `development` | Dev client build, internal distribution |
-| `preview` | Internal APK (Android) for testing |
-| `production` | Store-ready build with auto version increment |
+| Profile       | Description                                   |
+| ------------- | --------------------------------------------- |
+| `development` | Dev client build, internal distribution       |
+| `preview`     | Internal APK (Android) for testing            |
+| `production`  | Store-ready build with auto version increment |
 
 ### Prebuild (generate native projects)
 
