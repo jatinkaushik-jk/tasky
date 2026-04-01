@@ -20,7 +20,10 @@ export default function AppTabs() {
           src={require("@/assets/images/tabIcons/home.png")}
           renderingMode="template"
         /> */}
-        <Icon src={require("@/assets/images/tabIcons/home.png")} />
+        <Icon
+          src={require("@/assets/images/tabIcons/home.png")}
+          selectedColor={"white"}
+        />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="all">
@@ -29,7 +32,10 @@ export default function AppTabs() {
           src={require("@/assets/images/tabIcons/explore.png")}
           renderingMode="template"
         /> */}
-        <Icon src={require("@/assets/images/tabIcons/explore.png")} />
+        <Icon
+          src={require("@/assets/images/tabIcons/explore.png")}
+          selectedColor={"white"}
+        />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

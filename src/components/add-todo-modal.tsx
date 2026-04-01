@@ -1,3 +1,6 @@
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -15,6 +18,7 @@ import {
 } from "react-native";
 
 import { Spacing } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useTheme } from "@/hooks/use-theme";
 import { Todo } from "@/store/todos";
 
@@ -25,125 +29,162 @@ interface AddTodoModalProps {
   onClose: () => void;
 }
 
-function pad(n: number) {
-  return n.toString().padStart(2, "0");
+
+/** Format date as "Mon DD, YYYY" */
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
-function toTimeString(date: Date) {
-  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+/** Format time in 12-hr AM/PM */
+function formatTime(date: Date) {
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
 }
 
-function toDateString(date: Date) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
 
-// Simple inline date picker row
-function SimpleDatePicker({
+
+/**
+ * Native date/time picker using @react-native-community/datetimepicker.
+ * - Date: calendar UI
+ * - Time: clock UI in 12-hr AM/PM
+ * On Android pickers are shown as dialogs; on iOS inline spinners.
+ */
+function NativeDatePicker({
   label,
   value,
   onChange,
+  accentColor,
 }: {
   label: string;
   value: Date;
   onChange: (d: Date) => void;
+  accentColor?: string;
 }) {
   const theme = useTheme();
-  const [dateStr, setDateStr] = useState(toDateString(value));
-  const [timeStr, setTimeStr] = useState(toTimeString(value));
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const [showDate, setShowDate] = useState(false);
+  const [showTime, setShowTime] = useState(false);
 
-  const handleDateChange = (text: string) => {
-    setDateStr(text);
-    const parts = text.split("-");
-    if (parts.length === 3) {
-      const y = parseInt(parts[0]);
-      const m = parseInt(parts[1]) - 1;
-      const d = parseInt(parts[2]);
-      if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
-        const next = new Date(value);
-        next.setFullYear(y, m, d);
-        onChange(next);
+  const handleDateChange = (_: DateTimePickerEvent, selected?: Date) => {
+    if (Platform.OS === "android") {
+      setShowDate(false);
+      if (selected) {
+        // After date chosen on Android, open time picker
+        onChange(selected);
+        setShowTime(true);
       }
+    } else {
+      if (selected) onChange(selected);
     }
   };
 
-  const handleTimeChange = (text: string) => {
-    setTimeStr(text);
-    const parts = text.split(":");
-    if (parts.length === 2) {
-      const h = parseInt(parts[0]);
-      const min = parseInt(parts[1]);
-      if (!isNaN(h) && !isNaN(min)) {
-        const next = new Date(value);
-        next.setHours(h, min, 0, 0);
-        onChange(next);
-      }
+  const handleTimeChange = (_: DateTimePickerEvent, selected?: Date) => {
+    if (Platform.OS === "android") {
+      setShowTime(false);
     }
+    if (selected) onChange(selected);
   };
+
+  const accent = accentColor ?? theme.accent;
 
   return (
-    <View style={pickerStyles.row}>
-      <Text style={[pickerStyles.label, { color: theme.textSecondary }]}>
+    <View style={pickerStyles.container}>
+      <Text style={[pickerStyles.sectionLabel, { color: theme.textSecondary }]}>
         {label}
       </Text>
-      <TextInput
-        style={[
-          pickerStyles.input,
-          {
-            backgroundColor: theme.backgroundElement,
-            color: theme.text,
-            borderColor: theme.border,
-          },
-        ]}
-        value={dateStr}
-        onChangeText={handleDateChange}
-        placeholder="YYYY-MM-DD"
-        placeholderTextColor={theme.textSecondary}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={[
-          pickerStyles.input,
-          pickerStyles.timeInput,
-          {
-            backgroundColor: theme.backgroundElement,
-            color: theme.text,
-            borderColor: theme.border,
-          },
-        ]}
-        value={timeStr}
-        onChangeText={handleTimeChange}
-        placeholder="HH:MM"
-        placeholderTextColor={theme.textSecondary}
-        keyboardType="numeric"
-      />
+
+      <View style={pickerStyles.btnRow}>
+        {/* Date button */}
+        <Pressable
+          style={[pickerStyles.chipBtn, { backgroundColor: theme.backgroundElement, borderColor: accent }]}
+          onPress={() => setShowDate(true)}
+        >
+          <Text style={pickerStyles.chipIcon}>📅</Text>
+          <Text style={[pickerStyles.chipText, { color: theme.text }]}>
+            {formatDate(value)}
+          </Text>
+        </Pressable>
+
+        {/* Time button */}
+        <Pressable
+          style={[pickerStyles.chipBtn, { backgroundColor: theme.backgroundElement, borderColor: accent }]}
+          onPress={() => setShowTime(true)}
+        >
+          <Text style={pickerStyles.chipIcon}>🕐</Text>
+          <Text style={[pickerStyles.chipText, { color: theme.text }]}>
+            {formatTime(value)}
+          </Text>
+        </Pressable>
+      </View>
+
+      {/* Date picker */}
+      {showDate && (
+        <DateTimePicker
+          value={value}
+          mode="date"
+          display={Platform.OS === "ios" ? "inline" : "calendar"}
+          onChange={handleDateChange}
+          minimumDate={new Date()}
+          accentColor={accent}
+          themeVariant={isDark ? "dark" : "light"}
+        />
+      )}
+
+      {/* Time picker */}
+      {showTime && (
+        <DateTimePicker
+          value={value}
+          mode="time"
+          display={Platform.OS === "ios" ? "spinner" : "clock"}
+          is24Hour={false}
+          onChange={handleTimeChange}
+          accentColor={accent}
+          themeVariant={isDark ? "dark" : "light"}
+        />
+      )}
     </View>
   );
 }
 
 const pickerStyles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
+  container: {
     gap: Spacing.two,
   },
-  label: {
-    fontSize: 13,
-    fontWeight: "500",
-    width: 68,
-    flexShrink: 0,
+  sectionLabel: {
+    fontSize: 12,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
   },
-  input: {
+  btnRow: {
+    flexDirection: "row",
+    gap: Spacing.two,
+  },
+  chipBtn: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.one,
     borderRadius: 10,
-    borderWidth: 1,
-    paddingHorizontal: Spacing.two + 2,
-    paddingVertical: Spacing.one + 2,
-    fontSize: 14,
-    fontWeight: "500",
+    borderWidth: 1.5,
+    paddingHorizontal: Spacing.two,
+    paddingVertical: Spacing.one + 4,
   },
-  timeInput: {
-    flex: 0,
-    width: 76,
+  chipIcon: {
+    fontSize: 15,
+  },
+  chipText: {
+    fontSize: 13,
+    fontWeight: "600",
+    flexShrink: 1,
   },
 });
 
@@ -394,10 +435,11 @@ export function AddTodoModal({
                   { backgroundColor: theme.accentSoft },
                 ]}
               >
-                <SimpleDatePicker
-                  label="Date"
+                <NativeDatePicker
+                  label="Deadline"
                   value={deadline}
                   onChange={setDeadline}
+                  accentColor={theme.accent}
                 />
               </View>
             )}
@@ -433,10 +475,11 @@ export function AddTodoModal({
                   { backgroundColor: theme.warningSoft },
                 ]}
               >
-                <SimpleDatePicker
+                <NativeDatePicker
                   label="Reminder"
                   value={reminderTime}
                   onChange={setReminderTime}
+                  accentColor={theme.warning}
                 />
               </View>
             )}

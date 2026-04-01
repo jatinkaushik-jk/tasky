@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tasky",
+    "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/images/icon.png"
